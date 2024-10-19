@@ -1,16 +1,23 @@
-import { ModalContainer } from "@/components/modal"
-import { ModalContext } from "@/context/modal-context"
-import { IModalContext } from "@/context/modal-context/types"
-import { useContext } from "react"
+import { ReactElement } from "react"
 import { Outlet } from "react-router-dom"
 
-
-export const RootLayout = ()=>{
-    const {showModal, modalContent} = useContext(ModalContext)  as IModalContext
+export const AuthLayout = ()=>{
     return(
-        <>
-            <ModalContainer showModal={showModal} modalContent={modalContent} />
+        <div className="h-screen w-screen">
             <Outlet />
-        </>
+        </div>
+    )
+}
+
+export const RegisterLayout = ({sideNav}:{sideNav:ReactElement})=>{
+    return(
+        <div className="h-screen grid grid-cols-12 p-3">
+            <div className="col-span-3">
+                {sideNav}
+            </div>
+            <div className="col-span-9">
+                <Outlet />
+            </div>
+        </div>
     )
 }

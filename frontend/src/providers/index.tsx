@@ -1,14 +1,10 @@
 import { router } from "@/routes"
-import { RouterProvider } from "react-router-dom"
-import { ModalProvider } from "./modal-provider"
+import {RouterProvider} from "react-router-dom"
 
-
-export const RootProvider = () => {
-    return (
+export const RootProvider = ()=>{
+    return(
         <div>
-            <ModalProvider>
-                <RouterProvider router={router} />
-            </ModalProvider>
+            <RouterProvider router={router} />
         </div>
     )
 }
