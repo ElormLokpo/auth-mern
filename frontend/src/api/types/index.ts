@@ -1,9 +1,3 @@
-
-export enum GenderEnum {
-    Male = "M",
-    Female = "F"
-}
-
 export interface IAuth{
     firstname:string, 
     lastname:string, 
@@ -18,3 +12,4 @@ export interface IAuth{
     country?:string, 
     profile_picture?:string
 }
+
