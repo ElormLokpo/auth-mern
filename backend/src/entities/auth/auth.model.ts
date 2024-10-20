@@ -33,7 +33,7 @@ export const AuthSchema = new Schema({
         type: String,
         enum: Object.values(GenderEnum)
     },
-    nationality: String,
+    country: String,
     profile_picture: String,
     location:String, 
     zip_code: Number
