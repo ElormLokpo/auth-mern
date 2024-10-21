@@ -6,6 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { authSchema } from "@/schema/auth";
 import { useState } from "react";
+import { NewPassword } from "../../components/new-password";
 
 export const RegisterStepOne = () => {
     const [phone, setPhoneNumber] = useState<string>()
@@ -69,11 +70,11 @@ export const RegisterStepOne = () => {
                     </div>
 
                     <div className="mb-1">
-                        <Input label="Email(*)" name="email" type="email" register={register} errors={errors} />
+                        <Input label="Email(*)" placeholder="someone@something.com" name="email" type="email" register={register} errors={errors} />
                     </div>
-                    <div className="mb-1">
-                        <Input label="Passowrd(*)" name="password" type="password" register={register} errors={errors} />
-                    </div>
+                   
+                    <NewPassword register = {register} errors = {errors}/>
+
                     <div className="mb-4">
                         <Input label="Confirm Password(*)" name="password" type="password" register={register} errors={errors} />
                     </div>

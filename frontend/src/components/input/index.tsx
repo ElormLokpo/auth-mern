@@ -12,7 +12,7 @@ let generic_style = "w-full border rounded text-xs py-2 px-1 mb-1"
 let def_style = `${generic_style} focus:outline-indigo-500 `
 let error_style = `${generic_style} border-red-300 focus:outline-red-400`
 
-export const Input = ({ label, type, placeholder, register, errors, name }: IProps) => {
+export const Input = ({ label, type, placeholder, register, errors, name, onChange }: IProps) => {
 
 
     input_style = errors[`${name}`] ? error_style : def_style;
@@ -21,7 +21,7 @@ export const Input = ({ label, type, placeholder, register, errors, name }: IPro
     return (
         <div>
             <label className="text-[0.75rem] text-stone-700 font-semibold">{label}:</label>
-            <input {...register(name)} className={input_style} placeholder={placeholder} type={type ? type : "text"} />
+            <input {...register(name)} className={input_style} placeholder={placeholder} type={type ? type : "text"} onChange={onChange}/>
             {errors[`${name}`] && <p className="text-red-500 text-[0.65rem] flex items-center gap-1"><CgDanger /> {error_message as string}</p>}
 
         </div>
