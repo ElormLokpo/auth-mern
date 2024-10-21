@@ -6,7 +6,8 @@ export interface IProps {
     type?: string,
     register: UseFormRegister<FieldValues>,
     errors: FieldErrors<FieldValues>,
-    name: string
+    name: string,
+    onChange?:(param:any)=>void
 
 }
 
