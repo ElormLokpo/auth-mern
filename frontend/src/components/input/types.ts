@@ -7,7 +7,7 @@ export interface IProps {
     register: UseFormRegister<FieldValues>,
     errors: FieldErrors<FieldValues>,
     name: string,
-    onChange?:(param:any)=>void
+    onChange?: (param: any) => void
 
 }
 
@@ -22,4 +22,10 @@ export interface IPhoneProps {
 export interface ICountryProps {
     label?: string,
     handleCountryChange: (param: any) => void
+}
+
+export interface IConfirmPasswordProps {
+    label: string,
+    onChange: (param: any) => void,
+    errorMatch:boolean
 }

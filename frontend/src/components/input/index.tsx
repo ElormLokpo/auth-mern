@@ -1,4 +1,4 @@
-import { ICountryProps, IPhoneProps, IProps } from "./types";
+import { ICountryProps, IPhoneProps, IProps, IConfirmPasswordProps } from "./types";
 import { CgDanger } from "react-icons/cg";
 import { PhoneInput as Phone } from 'react-international-phone';
 import 'react-international-phone/style.css';
@@ -21,9 +21,19 @@ export const Input = ({ label, type, placeholder, register, errors, name, onChan
     return (
         <div>
             <label className="text-[0.75rem] text-stone-700 font-semibold">{label}:</label>
-            <input {...register(name)} className={input_style} placeholder={placeholder} type={type ? type : "text"} onChange={onChange}/>
+            <input {...register(name)} className={input_style} placeholder={placeholder} type={type ? type : "text"} onChange={onChange} />
             {errors[`${name}`] && <p className="text-red-500 text-[0.65rem] flex items-center gap-1"><CgDanger /> {error_message as string}</p>}
 
+        </div>
+    )
+}
+
+export const ConfirmPassword = ({onChange, label, errorMatch}:IConfirmPasswordProps) => {
+    return (
+        <div>
+            <label className="text-[0.75rem] text-stone-700 font-semibold">{label}:</label>
+            <input className={def_style}  type= "password" onChange={onChange} />
+            {errorMatch && <p className="text-red-500 text-[0.65rem] flex items-center gap-1">Passwords do not match</p>}
         </div>
     )
 }
@@ -52,7 +62,7 @@ export const PhoneInput = ({ label, errors, name, handlePhoneNumberChange }: IPh
 
 
 
-export const CountrySelector = ({label, handleCountryChange}:ICountryProps) => {
+export const CountrySelector = ({ label, handleCountryChange }: ICountryProps) => {
     let options = useMemo(() => countryList().getData(), [])
 
     const onChange = (country: any) => {
