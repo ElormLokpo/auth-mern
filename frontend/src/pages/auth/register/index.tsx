@@ -1,12 +1,13 @@
-import { FaShieldAlt } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { Input, PhoneInput, CountrySelector, ConfirmPassword } from "@/components/input";
 import { Button } from "@/components/button";
-import { FcGoogle } from "react-icons/fc";
 import { zodResolver } from "@hookform/resolvers/zod"
-import { authSchema } from "@/schema/auth";
+import { registerSchema } from "@/schema/auth";
 import { useState } from "react";
 import { NewPassword } from "../components/new-password";
+import { Link } from "react-router-dom";
+import { GoogleComponent } from "../components/google-comp";
+import { AuthTopSection } from "../components/top-section";
 
 export const Register = () => {
     const [phone, setPhoneNumber] = useState<string>()
@@ -15,7 +16,7 @@ export const Register = () => {
     const [confirmPasswordError, setConfirmPasswordError] = useState<boolean>(false)
 
     const { register, control, formState: { errors }, handleSubmit } = useForm({
-        resolver: zodResolver(authSchema)
+        resolver: zodResolver(registerSchema)
     })
 
     const handlePhoneNumberChange = (phoneNumber: string) => {
@@ -48,75 +49,64 @@ export const Register = () => {
 
 
     return (
-        <div className="flex justify-center flex-col items-center p-6">
-            <div className="w-[25rem]">
-                <div className="text-center flex items-center flex-col mb-8">
-                    <FaShieldAlt />
-                    <p className="text-xl font-semibold">Create a free account</p>
-                    <p className="text-sm">Kindly provide basic information. Fields with (*) are required.</p>
-                </div>
-
-                <form onSubmit={handleSubmit(handleFormSubmit)}>
-                    <div className="grid grid-cols-2 gap-2 mb-1">
-                        <Input label="First name(*)" name="firstname" register={register} errors={errors} />
-                        <Input label="Last name(*)" name="lastname" register={register} errors={errors} />
-                    </div>
-                    <div className="mb-1">
-                        <Input label="Other names" name="othernames" register={register} errors={errors} />
-                    </div>
-                    <div className="mb-1">
-                        <PhoneInput handlePhoneNumberChange={handlePhoneNumberChange} control={control} label="Phone Number" name="mobile" errors={errors} />
-                    </div>
-
-                    <div className="mb-1">
-                        <CountrySelector handleCountryChange={handleCountryChange} label="Country" />
-
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2 mb-4">
-                        {/* <Input label="Nationality" name="nationality" register={register} errors={errors} />
-                         */}
-                        <Input label="Address" name="address" register={register} errors={errors} />
-                        <Input label="Zip Code" name="zip_code" register={register} errors={errors} />
-
-                    </div>
-
-                    <div className="border mb-2 border-stone-100">
-
-                    </div>
-
-                    <div className="mb-1">
-                        <Input label="Email(*)" placeholder="someone@something.com" name="email" type="email" register={register} errors={errors} />
-                    </div>
-
-                    <NewPassword handlePassword={handlePasswordChange} register={register} errors={errors} />
-
-                    <div className="mb-4">
-                        <ConfirmPassword errorMatch={confirmPasswordError} label="Confirm Password" onChange={handleConfirmPassword} />
-                    </div>
-
-                    <div className="mb-1">
-                        <Button content="Next" handler={() => { }} />
-                    </div>
-
-                    <div className="flex items-center justify-center">
-                        <p className="mb-6 text-[0.8rem] underline">Already have an account? <span className="font-semibold">Login</span></p>
-                    </div>
-
-                    <div className="grid grid-cols-12 items-center gap-1 mb-2">
-                        <hr className="col-span-5" />
-                        <div className="col-span-2">
-                            <p className="text-center">or</p>
+        <div className="h-full p-6 flex justify-center">
+            <div className="flex w-[28rem] justify-center flex-col ">
+                <AuthTopSection
+                    head_text="Create free account"
+                    sub_text="Kindly provide basic information. Fields with (*) are required"
+                />
+                <div>
+                    <form onSubmit={handleSubmit(handleFormSubmit)}>
+                        <div className="grid grid-cols-2 gap-2 mb-1">
+                            <Input label="First name(*)" name="firstname" register={register} errors={errors} />
+                            <Input label="Last name(*)" name="lastname" register={register} errors={errors} />
+                        </div>
+                        <div className="mb-1">
+                            <Input label="Other names" name="othernames" register={register} errors={errors} />
+                        </div>
+                        <div className="mb-1">
+                            <PhoneInput handlePhoneNumberChange={handlePhoneNumberChange} control={control} label="Phone Number" name="mobile" errors={errors} />
                         </div>
 
-                        <hr className="col-span-5" />
-                    </div>
+                        <div className="mb-1">
+                            <CountrySelector handleCountryChange={handleCountryChange} label="Country" />
+
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 mb-4">
+                            {/* <Input label="Nationality" name="nationality" register={register} errors={errors} />
+                         */}
+                            <Input label="Address" name="address" register={register} errors={errors} />
+                            <Input label="Zip Code" name="zip_code" register={register} errors={errors} />
+
+                        </div>
+
+                        <div className="border mb-2 border-stone-100">
+
+                        </div>
+
+                        <div className="mb-1">
+                            <Input label="Email(*)" placeholder="someone@something.com" name="email" type="email" register={register} errors={errors} />
+                        </div>
+
+                        <NewPassword handlePassword={handlePasswordChange} register={register} errors={errors} />
+
+                        <div className="mb-4">
+                            <ConfirmPassword errorMatch={confirmPasswordError} label="Confirm Password" onChange={handleConfirmPassword} />
+                        </div>
+
+                        <div className="mb-1">
+                            <Button content="Next" handler={() => { }} />
+                        </div>
+
+                        <div className="flex items-center justify-center">
+                            <Link to="/auth/login" className="mb-6 text-[0.8rem] underline">Already have an account? <span className="font-semibold">Login</span></Link>
+                        </div>
 
 
-                    <div className="mb-6">
-                        <Button icon={<FcGoogle />} style_type="misc" content="Continue with Google" handler={() => { }} />
-                    </div>
-                </form>
+                    </form>
+                </div>
+                <GoogleComponent />
             </div>
         </div>
     )

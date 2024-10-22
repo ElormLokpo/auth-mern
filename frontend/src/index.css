@@ -16,3 +16,8 @@
     background-color: rgb(73, 71, 71);
     border-radius: 5rem;
 }
+
+#root{
+    height: 100vh;
+
+}
