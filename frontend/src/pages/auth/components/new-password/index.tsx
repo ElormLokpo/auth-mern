@@ -2,11 +2,12 @@ import { Input } from "@/components/input"
 import { IProps } from "./types";
 import { useEffect, useState } from "react";
 
-export const NewPassword = ({ register, errors }: IProps) => {
+export const NewPassword = ({ register, errors,handlePassword }: IProps) => {
     const [password, setPassword] = useState<string>("")
 
     const handlePasswordChange = (event: any) => {
         setPassword(event.target.value);
+        handlePassword(event.target.value)
     }
 
     return (

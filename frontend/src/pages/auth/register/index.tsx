@@ -1,17 +1,18 @@
 import { FaShieldAlt } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import { Input, PhoneInput, CountrySelector } from "@/components/input";
+import { Input, PhoneInput, CountrySelector, ConfirmPassword } from "@/components/input";
 import { Button } from "@/components/button";
 import { FcGoogle } from "react-icons/fc";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { authSchema } from "@/schema/auth";
 import { useState } from "react";
-import { NewPassword } from "../../components/new-password";
+import { NewPassword } from "../components/new-password";
 
-export const RegisterStepOne = () => {
+export const Register = () => {
     const [phone, setPhoneNumber] = useState<string>()
     const [country, setCountry] = useState<any>()
-
+    const [temPassword, setTempPassword] = useState<string>()
+    const [confirmPasswordError, setConfirmPasswordError] = useState<boolean>(false)
 
     const { register, control, formState: { errors }, handleSubmit } = useForm({
         resolver: zodResolver(authSchema)
@@ -25,9 +26,24 @@ export const RegisterStepOne = () => {
         setCountry(country)
     }
     const handleFormSubmit = (data: any) => {
-        data.phone = phone;
+        data.mobile = phone;
         data.country = country?.label;
-        console.log(data);
+
+        console.log(data)
+
+    }
+
+    const handlePasswordChange = (password: string) => {
+        setTempPassword(password)
+    }
+
+    const handleConfirmPassword = (event: any) => {
+
+        if (temPassword !== event.target.value) {
+            setConfirmPasswordError(true);
+        } else {
+            setConfirmPasswordError(false)
+        }
     }
 
 
@@ -60,7 +76,7 @@ export const RegisterStepOne = () => {
                     <div className="grid grid-cols-2 gap-2 mb-4">
                         {/* <Input label="Nationality" name="nationality" register={register} errors={errors} />
                          */}
-                        <Input label="Address" name="location" register={register} errors={errors} />
+                        <Input label="Address" name="address" register={register} errors={errors} />
                         <Input label="Zip Code" name="zip_code" register={register} errors={errors} />
 
                     </div>
@@ -72,15 +88,19 @@ export const RegisterStepOne = () => {
                     <div className="mb-1">
                         <Input label="Email(*)" placeholder="someone@something.com" name="email" type="email" register={register} errors={errors} />
                     </div>
-                   
-                    <NewPassword register = {register} errors = {errors}/>
+
+                    <NewPassword handlePassword={handlePasswordChange} register={register} errors={errors} />
 
                     <div className="mb-4">
-                        <Input label="Confirm Password(*)" name="password" type="password" register={register} errors={errors} />
+                        <ConfirmPassword errorMatch={confirmPasswordError} label="Confirm Password" onChange={handleConfirmPassword} />
                     </div>
 
-                    <div className="mb-6">
+                    <div className="mb-1">
                         <Button content="Next" handler={() => { }} />
+                    </div>
+
+                    <div className="flex items-center justify-center">
+                        <p className="mb-6 text-[0.8rem] underline">Already have an account? <span className="font-semibold">Login</span></p>
                     </div>
 
                     <div className="grid grid-cols-12 items-center gap-1 mb-2">

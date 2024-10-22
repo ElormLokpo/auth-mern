@@ -7,7 +7,7 @@ export interface IAuth{
     mobile?:string, 
     password:string, 
     gender?: string,
-    location?:string, 
+    address?:string, 
     zip_code?:number,
     country?:string, 
     profile_picture?:string

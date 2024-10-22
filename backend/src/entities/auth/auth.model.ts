@@ -35,7 +35,7 @@ export const AuthSchema = new Schema({
     },
     country: String,
     profile_picture: String,
-    location:String, 
+    address:String, 
     zip_code: Number
 
 })
