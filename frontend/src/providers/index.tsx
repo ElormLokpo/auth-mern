@@ -1,10 +1,14 @@
 import { router } from "@/routes"
-import {RouterProvider} from "react-router-dom"
+import { RouterProvider } from "react-router-dom"
+import { Provider as ReduxProvider } from "react-redux"
+import { store } from "@/services/redux/store"
 
-export const RootProvider = ()=>{
-    return(
+export const RootProvider = () => {
+    return (
         <div>
-            <RouterProvider router={router} />
+            <ReduxProvider store={store}>
+                <RouterProvider router={router} />
+            </ReduxProvider>
         </div>
     )
 }
