@@ -7,6 +7,8 @@ export interface IProps {
     register: UseFormRegister<FieldValues>,
     errors: FieldErrors<FieldValues>,
     name: string,
+    isError? : boolean,
+    isLoading?:boolean,
     onChange?: (param: any) => void
 
 }
@@ -16,16 +18,19 @@ export interface IPhoneProps {
     errors: FieldErrors<FieldValues>,
     name: string,
     label: string,
-    handlePhoneNumberChange: (param: any) => void
+    handlePhoneNumberChange: (param: any) => void,
+    isLoading?:boolean
 }
 
 export interface ICountryProps {
     label?: string,
-    handleCountryChange: (param: any) => void
+    handleCountryChange: (param: any) => void, 
+    isLoading?:boolean
 }
 
 export interface IConfirmPasswordProps {
     label: string,
     onChange: (param: any) => void,
-    errorMatch:boolean
+    errorMatch:boolean,
+    isLoading?:boolean
 }

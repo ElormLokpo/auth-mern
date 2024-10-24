@@ -8,12 +8,15 @@ import { NewPassword } from "../components/new-password";
 import { Link } from "react-router-dom";
 import { GoogleComponent } from "../components/google-comp";
 import { AuthTopSection } from "../components/top-section";
+import { useRegisterMutation } from "@/services/api/auth";
+import { toast } from "sonner"
 
 export const Register = () => {
     const [phone, setPhoneNumber] = useState<string>()
     const [country, setCountry] = useState<any>()
     const [temPassword, setTempPassword] = useState<string>()
     const [confirmPasswordError, setConfirmPasswordError] = useState<boolean>(false)
+    const [registerApiMutation, { isLoading }] = useRegisterMutation();
 
     const { register, control, formState: { errors }, handleSubmit } = useForm({
         resolver: zodResolver(registerSchema)
@@ -26,11 +29,21 @@ export const Register = () => {
     const handleCountryChange = (country: any) => {
         setCountry(country)
     }
-    const handleFormSubmit = (data: any) => {
+    const handleFormSubmit = async (data: any) => {
         data.mobile = phone;
         data.country = country?.label;
 
-        console.log(data)
+        let response = await registerApiMutation(data)
+        console.log(response)
+        let {message, success} = response.data as any;
+    
+        if (success== true){
+            toast.success(`${message}`);
+        }
+
+        if(success==false){
+            toast.error(`${message}`)
+        }
 
     }
 
@@ -49,6 +62,8 @@ export const Register = () => {
 
 
     return (
+
+
         <div className="h-full p-6 flex justify-center">
             <div className="flex w-[28rem] justify-center flex-col ">
                 <AuthTopSection
@@ -96,7 +111,7 @@ export const Register = () => {
                         </div>
 
                         <div className="mb-1">
-                            <Button content="Next" handler={() => { }} />
+                            <Button isLoading={isLoading} loadingText="Creating account..." content="Next" handler={() => { }} />
                         </div>
 
                         <div className="flex items-center justify-center">
@@ -109,5 +124,6 @@ export const Register = () => {
                 <GoogleComponent />
             </div>
         </div>
+
     )
 }

@@ -2,7 +2,7 @@ import { Input } from "@/components/input"
 import { IProps } from "./types";
 import { useEffect, useState } from "react";
 
-export const NewPassword = ({ register, errors,handlePassword }: IProps) => {
+export const NewPassword = ({ register, errors, handlePassword, isLoading }: IProps) => {
     const [password, setPassword] = useState<string>("")
 
     const handlePasswordChange = (event: any) => {
@@ -13,7 +13,7 @@ export const NewPassword = ({ register, errors,handlePassword }: IProps) => {
     return (
         <div>
             <div className="mb-1">
-                <Input label="Passoword(*)" onChange={handlePasswordChange} name="password" type="password" register={register} errors={errors} />
+                <Input isLoading={isLoading} label="Passoword(*)" onChange={handlePasswordChange} name="password" type="password" register={register} errors={errors} />
 
                 <PasswordStrength password={password} />
             </div>
@@ -65,7 +65,7 @@ const PasswordStrength = ({ password }: { password: string }) => {
             {parseInt(width) > 0 && <div className="grid grid-cols-12 items-center gap-3">
 
                 <div className="w-full col-span-10 bg-gray-200 rounded-full h-2">
-                    <div style={{ width: `${width}`,  transition: "width 0.5s ease-in-out" }} className={`${barBgColor} h-2 rounded-full`}></div>
+                    <div style={{ width: `${width}`, transition: "width 0.5s ease-in-out" }} className={`${barBgColor} h-2 rounded-full`}></div>
                 </div>
                 <p className={`text-[0.7rem] ${textColor} font-semibold col-span-2`}>{strength_description}</p>
             </div>}
