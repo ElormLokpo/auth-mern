@@ -13,3 +13,8 @@ export interface IAuth{
     profile_picture?:string
 }
 
+export interface IResponse {
+    message: string, 
+    success: boolean, 
+    data: any
+}

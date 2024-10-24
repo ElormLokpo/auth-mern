@@ -30,26 +30,29 @@ export class AuthController implements IController {
             let response = GenerateResponse(`User with email: ${email} already exists`, false, {})
             res.status(200).json(response);
             next();
+            
+        } else {
+            req.body.password = await HashPassword(password);
+            let auth_mutation = await AuthModel.create(req.body as IAuth);
+            let response_body = {
+                id: auth_mutation._id,
+                fullname: auth_mutation.firstname + " " + auth_mutation.lastname + " " + auth_mutation.othernames,
+                email: auth_mutation.email
+            }
+
+            let token = await GenerateToken({ id: auth_mutation._id })
+
+            let response = GenerateResponse(`User registered successfully`, true, {
+                token,
+                response_body
+            })
+            res.status(200).json(response);
+            next();
         }
 
         //Implemnt verify email
 
-        req.body.password = await HashPassword(password);
-        let auth_mutation = await AuthModel.create(req.body as IAuth);
-        let response_body = {
-            id: auth_mutation._id,
-            fullname: auth_mutation.firstname + " " + auth_mutation.lastname + " " + auth_mutation.othernames,
-            email: auth_mutation.email
-        }
 
-        let token = await GenerateToken({ id: auth_mutation._id })
-
-        let response = GenerateResponse(`User registered successfully`, true, {
-            token,
-            response_body
-        })
-        res.status(200).json(response);
-        next();
 
     }
 
@@ -72,7 +75,7 @@ export class AuthController implements IController {
         //hanlde unverfied email
 
         let password_check = await ComparePassword(password, email_check.password);
-       
+
         if (!password_check) {
             let response = GenerateResponse(`Incorrect Password`, false, {})
             res.status(200).json(response);
@@ -81,7 +84,7 @@ export class AuthController implements IController {
 
         let response_body = {
             id: email_check._id,
-            fullname: email_check.firstname + " " +email_check.lastname + " " +email_check.othernames,
+            fullname: email_check.firstname + " " + email_check.lastname + " " + email_check.othernames,
             email: email_check.email
         }
 

@@ -5,5 +5,7 @@ export interface IProps {
     content: string,
     icon?: ReactElement,
     type?: "submit" | "reset" | "button" | undefined,
-    style_type?: string
+    style_type?: string,
+    isLoading?: boolean,
+    loadingText?: string 
 }
