@@ -36,7 +36,15 @@ export const AuthSchema = new Schema({
     country: String,
     profile_picture: String,
     address:String, 
-    zip_code: Number
+    zip_code: Number,
+    otp:{
+        code:Number,
+        expiration_time: Number, 
+        created_at:{
+            type:Date, 
+            default: Date.now()
+        }
+    }
 
 })
 
