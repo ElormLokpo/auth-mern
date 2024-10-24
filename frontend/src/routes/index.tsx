@@ -1,12 +1,13 @@
 import {createBrowserRouter, RouteObject} from "react-router-dom";
-import { AuthRoutes } from "./auth_routes";
+import { AuthRoutes } from "./auth.route";
 import { RootLayout } from "@/layouts";
+import { HomeRoutes } from "./home.route";
 
 
 const RootRoute:RouteObject[] = [{
     path:"",
     element: <RootLayout />,
-    children: [...AuthRoutes]
+    children: [...AuthRoutes, ...HomeRoutes]
 }]
 
 export const router = createBrowserRouter([...RootRoute])

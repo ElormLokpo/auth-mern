@@ -35,13 +35,13 @@ export const Register = () => {
 
         let response = await registerApiMutation(data)
         console.log(response)
-        let {message, success} = response.data as any;
-    
-        if (success== true){
+        let { message, success } = response.data as any;
+
+        if (success == true) {
             toast.success(`${message}`);
         }
 
-        if(success==false){
+        if (success == false) {
             toast.error(`${message}`)
         }
 
@@ -66,10 +66,12 @@ export const Register = () => {
 
         <div className="h-full p-6 flex justify-center">
             <div className="flex w-[28rem] justify-center flex-col ">
-                <AuthTopSection
-                    head_text="Create free account"
-                    sub_text="Kindly provide basic information. Fields with (*) are required"
-                />
+                <div className="mb-8">
+                    <AuthTopSection
+                        head_text="Create free account"
+                        sub_text="Kindly provide basic information. Fields with (*) are required"
+                    />
+                </div>
                 <div>
                     <form onSubmit={handleSubmit(handleFormSubmit)}>
                         <div className="grid grid-cols-2 gap-2 mb-1">

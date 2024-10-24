@@ -6,13 +6,13 @@ import { loginSchema } from "@/schema/auth";
 import { Link } from "react-router-dom";
 import { GoogleComponent } from "../components/google-comp";
 import { AuthTopSection } from "../components/top-section";
-import {toast} from "sonner"
+import { toast } from "sonner"
 import { useLoginMutation } from "@/services/api/auth";
 import { useState } from "react";
 
 
 export const Login = () => {
-    const [loginApiMutation, {isLoading}] = useLoginMutation();
+    const [loginApiMutation, { isLoading }] = useLoginMutation();
     const [isError, setIsError] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>("")
 
@@ -25,13 +25,13 @@ export const Login = () => {
 
         let response = await loginApiMutation(data)
         console.log(response)
-        let {message, success} = response.data as any;
-    
-        if (success== true){
+        let { message, success } = response.data as any;
+
+        if (success == true) {
             toast.success(`${message}`);
         }
 
-        if(success==false){
+        if (success == false) {
             setIsError(true);
             toast.error(`${message}`)
             setErrorMessage(message);
@@ -42,10 +42,13 @@ export const Login = () => {
     return (
         <div className="h-screen flex items-center justify-center">
             <div className="flex justify-center w-[20rem] flex-col">
-                <AuthTopSection
-                    head_text="Log into your account"
-                    sub_text="Kindly login with your email and password."
-                />
+                <div className="mb-8">
+                    <AuthTopSection
+                        head_text="Log into your account"
+                        sub_text="Kindly login with your email and password."
+                    />
+                </div>
+
                 <div>
                     <form onSubmit={handleSubmit(handleFormSubmit)}>
 
