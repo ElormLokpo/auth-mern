@@ -10,6 +10,7 @@ import { GoogleComponent } from "../components/google-comp";
 import { AuthTopSection } from "../components/top-section";
 import { useRegisterMutation } from "@/services/api/auth";
 import { toast } from "sonner"
+import {useNavigate} from "react-router-dom"
 
 export const Register = () => {
     const [phone, setPhoneNumber] = useState<string>()
@@ -17,6 +18,8 @@ export const Register = () => {
     const [temPassword, setTempPassword] = useState<string>()
     const [confirmPasswordError, setConfirmPasswordError] = useState<boolean>(false)
     const [registerApiMutation, { isLoading }] = useRegisterMutation();
+
+    let navigate = useNavigate();
 
     const { register, control, formState: { errors }, handleSubmit } = useForm({
         resolver: zodResolver(registerSchema)
@@ -34,11 +37,12 @@ export const Register = () => {
         data.country = country?.label;
 
         let response = await registerApiMutation(data)
-        console.log(response)
+        
         let { message, success } = response.data as any;
 
         if (success == true) {
             toast.success(`${message}`);
+            navigate("/auth/otp")
         }
 
         if (success == false) {

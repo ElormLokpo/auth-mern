@@ -1,8 +1,17 @@
 import { useState, useRef, useEffect } from "react"
 import { AuthTopSection } from "../components/top-section"
-import { Button } from "@/components/button"
+import { useSelector } from "react-redux"
+import { current } from "@reduxjs/toolkit";
+import { useRequestOtpMutation, useValidateOtpMutation } from "@/services/api/auth";
+import { toast } from "sonner";
 
 export const OtpPage = () => {
+
+    let { currentUser } = useSelector((state: any) => state.auth.value);
+    console.log("USER", currentUser);
+
+
+
     return (
         <div className="h-screen flex  items-center justify-center">
             <div className="flex justify-center w-[20rem] flex-col">
@@ -14,7 +23,12 @@ export const OtpPage = () => {
                 </div>
 
                 <div>
-                    <OtpInput />
+                    <div className="mb-1">
+                        <OtpInput email={currentUser.email} />
+
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -22,20 +36,47 @@ export const OtpPage = () => {
 }
 
 
-export const OtpInput = () => {
+export const OtpInput = ({ email }: { email: string }) => {
     let [otp, setOtp] = useState<string[]>(new Array(6).fill(""))
     let inputRefs = useRef<(HTMLInputElement | null)[]>([])
+    let [validateOtp, { isLoading }] = useValidateOtpMutation()
+    let [requestOtp, { }] = useRequestOtpMutation();
+    let [isError, setIsError] = useState<boolean>(false)
+    let [restartTimer, setRestartTimer] = useState<boolean>(false)
 
-    let input_style;
+
+    let input_style: string;
     let generic_style = "w-full h-[4rem] flex items-center justify-center text-center border rounded text-lg py-2 px-1 mb-1"
     let def_style = `${generic_style} focus:outline-indigo-500 `
     let error_style = `${generic_style} border-red-300 focus:outline-red-400`
 
-    input_style = def_style
+    input_style = isError ? error_style : def_style
 
-    useEffect(()=>{
 
-    },[otp])
+
+    useEffect(() => {
+        if (otp[otp.length - 1]) {
+
+
+            const handleResponse = async () => {
+                try {
+                    let { data } = await validateOtp({ email, otp: parseInt(otp.join("")) });
+
+                    console.log(data);
+                    if (data?.success == true) {
+                        toast("Account verified successfully")
+                    } else {
+                        setIsError(true)
+                    }
+                } catch (error) {
+                    console.error("Error during OTP validation:", error);
+                }
+            };
+
+
+            handleResponse();
+        }
+    }, [otp])
 
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
@@ -57,12 +98,16 @@ export const OtpInput = () => {
         newOtp[index] = event.target.value;
         setOtp(newOtp);
 
-
         if (index < 5) {
             inputRefs.current[index + 1]?.focus();
         }
+    }
 
+    const hanldeResendOtp = async () => {
+        let response = await requestOtp({ email })
 
+        setRestartTimer(true)
+        console.log(response)
     }
 
     return (
@@ -83,7 +128,46 @@ export const OtpInput = () => {
 
 
             </div>
+            <div className="flex items-center justify-center">
+                <p className="text-xs text-red-500">{isError && "Invalid Otp"}</p>
+            </div>
 
+            <div>
+                <Timer handleResendOtp={hanldeResendOtp} restartTimer={restartTimer} />
+            </div>
+
+        </div>
+    )
+}
+
+const Timer = ({ handleResendOtp, restartTimer }: { handleResendOtp: () => void, restartTimer: boolean }) => {
+    const [timer, setTimer] = useState<number>(0);
+
+    useEffect(() => {
+        if (restartTimer == true) {
+            setTimer(300);
+
+        }
+    }, [restartTimer])
+
+    useEffect(() => {
+
+        if (timer > 0) {
+            let intervalId = setInterval(() => {
+                setTimer((timeLeft) => timeLeft - 1)
+            }, 1000);
+
+            return () => clearInterval(intervalId)
+        }
+    }, [])
+
+    let minutes = Math.floor(timer / 60);
+    let seconds = timer % 60;
+
+    return (
+        <div className="flex items-center justify-center">
+            {timer !== 0 ? <p className="text-sm"> Otp would be invalid in <span className="font-semibold">{minutes}:{seconds} minutes.</span></p>
+                : <button className="text-sm underline" onClick={handleResendOtp}>resend otp</button>}
         </div>
     )
 }

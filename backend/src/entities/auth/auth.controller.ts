@@ -16,8 +16,8 @@ export class AuthController implements IController {
     constructor() {
         this.router.post(`${this.path}/register`, this.RegisterUser)
         this.router.post(`${this.path}/login`, this.LoginUser)
-        this.router.post(`${this.path}/otp`, this.ValidateOtp)
-
+        this.router.post(`${this.path}/validate-otp`, this.ValidateOtp)
+        this.router.post(`${this.path}/request-otp`, this.RequestOtp)
     }
 
     private async RegisterUser(req: Request, res: Response, next: NextFunction) {
@@ -42,7 +42,7 @@ export class AuthController implements IController {
                 req.body.password = await HashPassword(password);
                 req.body.otp = {
                     code: otp_code,
-                    expiration_time: 3 * 60 * 1000
+                    expiration_time: 5 * 60 * 1000
                 }
 
                 let auth_mutation = await AuthModel.create(req.body as IAuth);
@@ -67,36 +67,6 @@ export class AuthController implements IController {
 
     }
 
-    private async ValidateOtp(req: Request, res: Response, next: NextFunction) {
-        let { otp, email } = req.body;
-
-        let email_check = await AuthModel.findOne({ email });
-        if (!email_check) {
-            let response = GenerateResponse(`User with email: ${email} does not exist`, false, {})
-            res.status(200).json(response);
-            next();
-        } else {
-            let validate_otp = ValidateOtp(otp, email_check.otp);
-            if (validate_otp) {
-                await AuthModel.findByIdAndUpdate(email_check._id, { email_verified: true, otp: {} }, { new: true })
-
-                let response = GenerateResponse(`Account verfied successfully`, true, {
-                    id: email_check._id,
-                    fullname: email_check.firstname + " " + email_check.lastname + " " + email_check.othernames,
-                    email: email_check.email,
-                    email_verified: email_check.email_verified
-                })
-                res.status(200).json(response);
-                next();
-            } else {
-
-                let response = GenerateResponse(`Invalid Otp`, false, {})
-                res.status(200).json(response);
-                next();
-            }
-        }
-
-    }
 
     private async LoginUser(req: Request, res: Response, next: NextFunction) {
         const { email, password } = req.body as IAuth;
@@ -139,6 +109,74 @@ export class AuthController implements IController {
         res.status(200).json(response);
         next();
     }
+
+
+    private async ValidateOtp(req: Request, res: Response, next: NextFunction) {
+        let { otp, email } = req.body;
+
+        let email_check = await AuthModel.findOne({ email });
+        if (!email_check) {
+            let response = GenerateResponse(`User with email: ${email} does not exist`, false, {})
+            res.status(200).json(response);
+            next();
+        } else {
+            let validate_otp = ValidateOtp(otp, email_check.otp);
+            if (validate_otp) {
+                await AuthModel.findByIdAndUpdate(email_check._id, { email_verified: true, otp: {} }, { new: true })
+
+                let response = GenerateResponse(`Account verfied successfully`, true, {
+                    id: email_check._id,
+                    fullname: email_check.firstname + " " + email_check.lastname + " " + email_check.othernames,
+                    email: email_check.email,
+                    email_verified: email_check.email_verified
+                })
+                res.status(200).json(response);
+                next();
+            } else {
+
+                let response = GenerateResponse(`Invalid Otp`, false, {})
+                res.status(200).json(response);
+                next();
+            }
+        }
+
+    }
+
+
+    private async RequestOtp(req: Request, res: Response, next: NextFunction) {
+        let { email } = req.body;
+
+        let email_check = await AuthModel.findOne({ email });
+        if (!email_check) {
+            let response = GenerateResponse(`User with email: ${email} does not exist`, false, {})
+            res.status(200).json(response);
+            next();
+        } else if (email_check.email_verified == true) {
+            let response = GenerateResponse(`User with email: ${email} is already verfied`, false, {})
+            res.status(200).json(response);
+            next();
+        }
+        else {
+            let otp_code = await sendOTPEmail(email)
+
+            let update_body = {
+                otp: {
+                    code: otp_code,
+                    expiration_time: 5 * 60 * 1000
+                }
+            }
+
+            await AuthModel.findByIdAndUpdate(email_check._id, update_body, { new: true })
+
+            let response = GenerateResponse(`Otp sent successfully`, true, {})
+            res.status(200).json(response);
+            next();
+
+        }
+
+    }
+
+
 
 
 }

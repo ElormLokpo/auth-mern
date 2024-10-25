@@ -117,7 +117,7 @@ export const generateEmail = (otp: number) => `<!DOCTYPE html>
     </p>
     <h2 class="otp">${otp}</h2>
     <p style="font-size: 0.9em">
-      <strong>One-Time Password (OTP) is valid for 3 minutes.</strong>
+      <strong>One-Time Password (OTP) is valid for 5 minutes.</strong>
       <br />
       <br />
       If you did not initiate this request, please disregard this

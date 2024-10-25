@@ -20,10 +20,10 @@ export const AuthApi = createApi({
                     const { message, success, data } = response.data as IResponse;
 
                     if (success == true) {
-                        let {token, response_body:currentUser} = data;
-                        dispatch(storeAuthState({token, currentUser}))
+                        let { token, response_body: currentUser } = data;
+                        dispatch(storeAuthState({ token, currentUser }))
                     }
-                    return {data: {message, success}};
+                    return { data: { message, success } };
                 }
 
 
@@ -44,20 +44,61 @@ export const AuthApi = createApi({
                     const { message, success, data } = response.data as IResponse;
 
                     if (success == true) {
-                        let {token, response_body:currentUser} = data;
-                        dispatch(storeAuthState({token, currentUser}))
+                        let { token, response_body: currentUser } = data;
+                        dispatch(storeAuthState({ token, currentUser }))
                     }
-                    return {data: {message, success}};
+                    return { data: { message, success } };
                 }
 
 
                 return { data: { message: "Something went wrong", success: false } }
             }
         }),
-        
+        validateOtp: builder.mutation<Partial<IResponse>, any>({
+            queryFn: async (args, _dispatch, _extraOptions, baseQuery) => {
+
+                const response = await baseQuery({
+                    url: "/auth/validate-otp",
+                    method: "POST",
+                    body: args,
+                })
+
+                if (response.data) {
+                    const { message, success } = response.data as IResponse;
+
+                    return { data: { message, success } };
+                }
+
+
+                return { data: { message: "Something went wrong", success: false } }
+            }
+        }),
+        requestOtp: builder.mutation<Partial<IResponse>, any>({
+            queryFn: async (args, _dispatch, _extraOptions, baseQuery) => {
+
+                const response = await baseQuery({
+                    url: "/auth/request-otp",
+                    method: "POST",
+                    body: args,
+                })
+
+                if (response.data) {
+                    const { message, success } = response.data as IResponse;
+
+                    return { data: { message, success } };
+                }
+
+
+                return { data: { message: "Something went wrong", success: false } }
+            }
+        }),
+
+
     }),
-    
+
+
+
 })
 
 
-export const { useRegisterMutation, useLoginMutation } = AuthApi;
+export const { useRegisterMutation, useLoginMutation, useValidateOtpMutation, useRequestOtpMutation } = AuthApi;
