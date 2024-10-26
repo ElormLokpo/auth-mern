@@ -58,12 +58,7 @@ export const ResetPasswordEmailPage = () => {
 }
 
 export const ResetPasswordNewPasswordPage = () => {
-    const [isError, setIsError] = useState<boolean>(false);
-    const [errorMessage, setErrorMessage] = useState<string>()
-    const [email, setEmail] = useState<string>()
-
     const { register, formState: { errors }, handleSubmit } = useForm()
-
 
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -86,12 +81,12 @@ export const ResetPasswordNewPasswordPage = () => {
 
                 <form onSubmit={handleSubmit(handleFromSubmit)}>
                     <div className="mb-3">
-                        <NewPassword showLabel={false} placeholder = "Kindly enter new password" register={register} errors={errors} handlePassword={handlePasswordChange} />
+                        <NewPassword showLabel={false} placeholder="Kindly enter new password" register={register} errors={errors} handlePassword={handlePasswordChange} />
 
                     </div>
 
                     <div>
-                        <Button  handler={() => { }} content="Reset Password" />
+                        <Button handler={() => { }} content="Reset Password" />
                     </div>
                 </form>
             </div>
