@@ -1,4 +1,4 @@
-import { ICountryProps, IPhoneProps, IProps, IConfirmPasswordProps } from "./types";
+import { ICountryProps, IPhoneProps, IProps, IConfirmPasswordProps, IMiscProps } from "./types";
 import { CgDanger } from "react-icons/cg";
 import { PhoneInput as Phone } from 'react-international-phone';
 import 'react-international-phone/style.css';
@@ -20,13 +20,26 @@ export const Input = ({ label, type, placeholder, isError, register, errors, nam
 
     return (
         <div>
-            <label className="text-[0.75rem] text-stone-700 font-semibold">{label}:</label>
+            <label className="text-[0.75rem] text-stone-700 font-semibold">{label}</label>
             <input disabled={isLoading} {...register(name)} className={input_style} placeholder={placeholder} type={type ? type : "text"} onChange={onChange} />
             {errors[`${name}`] && <p className="text-red-500 text-[0.65rem] flex items-center gap-1"><CgDanger /> {error_message as string}</p>}
 
         </div>
     )
 }
+
+export const MiscInput = ({ label, type, placeholder, isError, name, onChange, isLoading, errorMessage }: IMiscProps) => {
+    input_style =  isError ? error_style : def_style;
+
+    return (
+        <div>
+            <label className="text-[0.75rem] text-stone-700 font-semibold">{label}</label>
+            <input disabled={isLoading} className={input_style} placeholder={placeholder} type={type ? type : "text"} onChange={onChange} />
+            {isError && <p className="text-red-500 text-[0.65rem] flex items-center gap-1"><CgDanger /> {errorMessage}</p>}
+        </div>
+    )
+}
+
 
 export const ConfirmPassword = ({onChange, label, errorMatch, isLoading}:IConfirmPasswordProps) => {
     return (

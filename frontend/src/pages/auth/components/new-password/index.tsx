@@ -1,8 +1,10 @@
 import { Input } from "@/components/input"
 import { IProps } from "./types";
 import { useEffect, useState } from "react";
+import { UseFormRegister, FieldValues, FieldErrors } from "react-hook-form";
 
-export const NewPassword = ({ register, errors, handlePassword, isLoading }: IProps) => {
+
+export const NewPassword = ({ register, errors, handlePassword, isLoading, showLabel = true, placeholder }: IProps) => {
     const [password, setPassword] = useState<string>("")
 
     const handlePasswordChange = (event: any) => {
@@ -13,7 +15,7 @@ export const NewPassword = ({ register, errors, handlePassword, isLoading }: IPr
     return (
         <div>
             <div className="mb-1">
-                <Input isLoading={isLoading} label="Passoword(*)" onChange={handlePasswordChange} name="password" type="password" register={register} errors={errors} />
+                <Input placeholder={placeholder} isLoading={isLoading} label={showLabel ? "Passoword(*):" : ""} onChange={handlePasswordChange} name="password" type="password" register={register as UseFormRegister<FieldValues>} errors={errors as FieldErrors<FieldValues>} />
 
                 <PasswordStrength password={password} />
             </div>

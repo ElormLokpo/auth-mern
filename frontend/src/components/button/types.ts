@@ -7,5 +7,6 @@ export interface IProps {
     type?: "submit" | "reset" | "button" | undefined,
     style_type?: string,
     isLoading?: boolean,
-    loadingText?: string 
+    loadingText?: string,
+    isDisabled?:boolean
 }

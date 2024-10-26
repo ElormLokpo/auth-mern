@@ -12,6 +12,16 @@ export interface IProps {
     onChange?: (param: any) => void
 
 }
+export interface IMiscProps{
+    label?: string,
+    placeholder?: string,
+    type?: string,
+    name: string,
+    isError : boolean,
+    isLoading?:boolean,
+    errorMessage:string, 
+    onChange: (param: any) => void
+}
 
 export interface IPhoneProps {
     control: Control<FieldValues, any>,
