@@ -1,7 +1,17 @@
 import { Button } from "@/components/button";
 import { GoDotFill } from "react-icons/go";
+import {useDispatch} from "react-redux"
+import {clearAuthState} from "@/services/redux/reducers/auth-slice"
+import {} from "react-router-dom";
 
 export const HomePage = () => {
+    const dispatch = useDispatch();
+
+    const handleLogout = ()=>{
+        dispatch(clearAuthState())
+    }
+
+
     return (
         <div className="h-screen w-screen flex items-center justify-center">
             <div className="flex flex-col items-center">
@@ -20,7 +30,7 @@ export const HomePage = () => {
                 </div>
 
                 
-                    <Button content="Logout" handler={()=>{}} />
+                    <Button content="Logout" handler={handleLogout} />
                 
             </div>
         </div>
