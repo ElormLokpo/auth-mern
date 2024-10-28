@@ -18,6 +18,7 @@ export class AuthController implements IController {
         this.router.post(`${this.path}/login`, this.LoginUser)
         this.router.post(`${this.path}/validate-otp`, this.ValidateOtp)
         this.router.post(`${this.path}/request-otp`, this.RequestOtp)
+        this.router.post(`${this.path}/reset-password`, this.ResetPassword)
     }
 
     private async RegisterUser(req: Request, res: Response, next: NextFunction) {
@@ -151,10 +152,6 @@ export class AuthController implements IController {
             let response = GenerateResponse(`User with email: ${email} does not exist`, false, {})
             res.status(200).json(response);
             next();
-        } else if (email_check.email_verified == true) {
-            let response = GenerateResponse(`User with email: ${email} is already verfied`, false, {})
-            res.status(200).json(response);
-            next();
         }
         else {
             let otp_code = await sendOTPEmail(email)
@@ -173,6 +170,27 @@ export class AuthController implements IController {
             next();
 
         }
+
+    }
+
+    private async ResetPassword(req: Request, res: Response, next: NextFunction) {
+        let { id, email, password } = req.body;
+
+        let email_check = await AuthModel.findOne({ email });
+        if (!email_check) {
+            let response = GenerateResponse(`User with email: ${email} does not exist`, false, {})
+            res.status(200).json(response);
+            next();
+        } else {
+
+            await AuthModel.findByIdAndUpdate(id, { password }, { new: true });
+
+            let response = GenerateResponse(`Password reset successfully`, true, {})
+            res.status(200).json(response);
+            next();
+
+        }
+
 
     }
 
