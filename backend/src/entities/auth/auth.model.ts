@@ -38,12 +38,13 @@ export const AuthSchema = new Schema({
     address:String, 
     zip_code: Number,
     otp:{
-        code:Number,
+        otp_code:Number,
         expiration_time: Number, 
         created_at:{
             type:Date, 
             default: Date.now()
         }
+        
     }
 
 })

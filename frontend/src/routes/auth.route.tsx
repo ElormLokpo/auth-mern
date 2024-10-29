@@ -6,6 +6,11 @@ import { RouteObject } from "react-router-dom";
 
 export const AuthRoutes: RouteObject[] = [
     {
+        path: "",
+        element: <Register />
+
+    },
+    {
         path: "auth/register",
         element: <Register />
 

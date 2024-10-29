@@ -5,7 +5,7 @@ import { GenerateResponse } from "../../helpers/response.gen";
 import { AuthModel } from "./auth.model";
 import { GenerateToken } from "../../helpers/token.helper";
 import { ComparePassword, HashPassword } from "../../helpers/hash.password";
-import { emailTrasporter, generateEmail, sendOTPEmail } from "../../helpers/email.sender";
+import { sendOTPEmail } from "../../helpers/email.sender";
 import { ValidateOtp } from "../../helpers/otp.helper";
 
 
@@ -37,14 +37,10 @@ export class AuthController implements IController {
                 next();
 
             } else {
-                let otp_code = await sendOTPEmail(email)
-
+                let otp = await sendOTPEmail(email)
 
                 req.body.password = await HashPassword(password);
-                req.body.otp = {
-                    code: otp_code,
-                    expiration_time: 5 * 60 * 1000
-                }
+                req.body.otp = otp;
 
                 let auth_mutation = await AuthModel.create(req.body as IAuth);
                 let response_body = {
@@ -121,24 +117,32 @@ export class AuthController implements IController {
             res.status(200).json(response);
             next();
         } else {
-            let validate_otp = ValidateOtp(otp, email_check.otp);
-            if (validate_otp) {
-                await AuthModel.findByIdAndUpdate(email_check._id, { email_verified: true, otp: {} }, { new: true })
 
-                let response = GenerateResponse(`Account verfied successfully`, true, {
-                    id: email_check._id,
-                    fullname: email_check.firstname + " " + email_check.lastname + " " + email_check.othernames,
-                    email: email_check.email,
-                    email_verified: email_check.email_verified
-                })
-                res.status(200).json(response);
-                next();
+            if (email_check.otp && Object.keys(email_check).length > 0) {
+                let validate_otp = ValidateOtp(otp, email_check.otp);
+                if (validate_otp) {
+                    await AuthModel.findByIdAndUpdate(email_check._id, { email_verified: true, otp: {} }, { new: true })
+
+                    let response = GenerateResponse(`Account verfied successfully`, true, {
+                        id: email_check._id,
+                        fullname: email_check.firstname + " " + email_check.lastname + " " + email_check.othernames,
+                        email: email_check.email,
+                        email_verified: email_check.email_verified
+                    })
+                    res.status(200).json(response);
+                    next();
+                } else {
+
+                    let response = GenerateResponse(`Invalid Otp`, false, {})
+                    res.status(200).json(response);
+                    next();
+                }
             } else {
-
-                let response = GenerateResponse(`Invalid Otp`, false, {})
+                let response = GenerateResponse(`Kindly request new otp`, false, {})
                 res.status(200).json(response);
                 next();
             }
+
         }
 
     }
@@ -154,20 +158,22 @@ export class AuthController implements IController {
             next();
         }
         else {
-            let otp_code = await sendOTPEmail(email)
+            let otp = await sendOTPEmail(email)
 
-            let update_body = {
-                otp: {
-                    code: otp_code,
-                    expiration_time: 5 * 60 * 1000
-                }
+            if (otp && Object.keys(otp).length > 0) {
+                let update_body = { otp }
+
+                await AuthModel.findByIdAndUpdate(email_check._id, update_body, { new: true })
+
+                let response = GenerateResponse(`Otp sent successfully`, true, {})
+                res.status(200).json(response);
+                next();
+            } else {
+                let response = GenerateResponse(`Something went wrong..Please try again`, false, {})
+                res.status(200).json(response);
+                next();
             }
 
-            await AuthModel.findByIdAndUpdate(email_check._id, update_body, { new: true })
-
-            let response = GenerateResponse(`Otp sent successfully`, true, {})
-            res.status(200).json(response);
-            next();
 
         }
 
@@ -183,11 +189,19 @@ export class AuthController implements IController {
             next();
         } else {
 
-            await AuthModel.findByIdAndUpdate(id, { password }, { new: true });
+            if (email_check.otp && Object.keys(email_check.otp).length > 0) {
+                let response = GenerateResponse(`Otp not validated`, false, {})
+                res.status(200).json(response);
+                next();
+            } else {
+                await AuthModel.findByIdAndUpdate(id, { password }, { new: true });
 
-            let response = GenerateResponse(`Password reset successfully`, true, {})
-            res.status(200).json(response);
-            next();
+                let response = GenerateResponse(`Password reset successfully`, true, {})
+                res.status(200).json(response);
+                next();
+            }
+
+
 
         }
 

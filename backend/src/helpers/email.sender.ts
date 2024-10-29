@@ -1,4 +1,5 @@
 import { createTransport } from "nodemailer";
+import { generateOtp } from "./otp.helper";
 
 
 export const emailTrasporter = createTransport({
@@ -14,8 +15,8 @@ export const emailTrasporter = createTransport({
 
 export const sendOTPEmail = async (email:string)=>{
     
-    let otp = Math.floor(100000 + Math.random() * 900000);
-    let htmlEmailGenerated = generateEmail(otp);
+    let otp = generateOtp()
+    let htmlEmailGenerated = generateEmail(otp.otp_code);
 
     await emailTrasporter.sendMail({
         from:"benedictdev31@gmail.com",

@@ -141,7 +141,7 @@ export const OtpInput = ({ email }: { email: string }) => {
 }
 
 const Timer = ({ handleResendOtp, restartTimer }: { handleResendOtp: () => void, restartTimer: boolean }) => {
-    const [timer, setTimer] = useState<number>(0);
+    const [timer, setTimer] = useState<number>(300);
 
     useEffect(() => {
         if (restartTimer == true) {
@@ -158,8 +158,10 @@ const Timer = ({ handleResendOtp, restartTimer }: { handleResendOtp: () => void,
             }, 1000);
 
             return () => clearInterval(intervalId)
+        }else{
+            setTimer(0);
         }
-    }, [])
+    }, [timer])
 
     let minutes = Math.floor(timer / 60);
     let seconds = timer % 60;
