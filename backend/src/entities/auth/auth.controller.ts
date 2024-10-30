@@ -47,7 +47,10 @@ export class AuthController implements IController {
                     id: auth_mutation._id,
                     fullname: auth_mutation.firstname + " " + auth_mutation.lastname + " " + auth_mutation.othernames,
                     email: auth_mutation.email,
-                    email_verified: auth_mutation.email_verified
+                    email_verified: auth_mutation.email_verified,
+                    mobile: auth_mutation.mobile, 
+                    country: auth_mutation.country,
+                    address: auth_mutation.address,
                 }
                 let token = await GenerateToken({ id: auth_mutation._id })
 
@@ -94,7 +97,11 @@ export class AuthController implements IController {
         let response_body = {
             id: email_check._id,
             fullname: email_check.firstname + " " + email_check.lastname + " " + email_check.othernames,
-            email: email_check.email
+            email: email_check.email,
+            email_verified: email_check.email_verified,
+            mobile: email_check.mobile,
+            country: email_check.country,
+            address: email_check.address
         }
 
         let token = await GenerateToken({ id: email_check._id })
@@ -127,7 +134,10 @@ export class AuthController implements IController {
                         id: email_check._id,
                         fullname: email_check.firstname + " " + email_check.lastname + " " + email_check.othernames,
                         email: email_check.email,
-                        email_verified: email_check.email_verified
+                        email_verified: email_check.email_verified,
+                        mobile: email_check.mobile,
+                        country: email_check.country,
+                        address: email_check.address
                     })
                     res.status(200).json(response);
                     next();

@@ -21,7 +21,7 @@ export const AuthApi = createApi({
 
                     if (success == true) {
                         let { token, response_body: currentUser } = data;
-                        dispatch(storeAuthState({ token, currentUser }))
+                        await dispatch(storeAuthState({ token, currentUser }))
                     }
                     return { data: { message, success } };
                 }
@@ -45,7 +45,8 @@ export const AuthApi = createApi({
 
                     if (success == true) {
                         let { token, response_body: currentUser } = data;
-                        dispatch(storeAuthState({ token, currentUser }))
+                       
+                        await dispatch(storeAuthState({ token, currentUser }))
                     }
                     return { data: { message, success } };
                 }

@@ -1,17 +1,15 @@
 import { useState, useRef, useEffect } from "react"
 import { AuthTopSection } from "../components/top-section"
 import { useSelector } from "react-redux"
-import { current } from "@reduxjs/toolkit";
 import { useRequestOtpMutation, useValidateOtpMutation } from "@/services/api/auth";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { routes } from "@/constants";
 
 export const OtpPage = () => {
 
     let { currentUser } = useSelector((state: any) => state.auth.value);
-    console.log("USER", currentUser);
-
-
-
+ 
     return (
         <div className="h-screen flex  items-center justify-center">
             <div className="flex justify-center w-[20rem] flex-col">
@@ -52,7 +50,7 @@ export const OtpInput = ({ email }: { email: string }) => {
 
     input_style = isError ? error_style : def_style
 
-
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (otp[otp.length - 1]) {
@@ -62,9 +60,11 @@ export const OtpInput = ({ email }: { email: string }) => {
                 try {
                     let { data } = await validateOtp({ email, otp: parseInt(otp.join("")) });
 
-                    console.log(data);
+
                     if (data?.success == true) {
                         toast("Account verified successfully")
+                        setIsError(false);
+                        navigate(routes.home)
                     } else {
                         setIsError(true)
                     }
@@ -104,10 +104,20 @@ export const OtpInput = ({ email }: { email: string }) => {
     }
 
     const hanldeResendOtp = async () => {
-        let response = await requestOtp({ email })
+        let { data } = await requestOtp({ email })
 
-        setRestartTimer(true)
-        console.log(response)
+
+        if (data?.success == true) {
+
+            toast.success("Otp sent. Kindly check your email.")
+            setIsError(false);
+            setOtp(new Array(6).fill(""))
+            setRestartTimer(true)
+
+        } else {
+            toast.error("Something went wrong please try again.")
+        }
+
     }
 
     return (
@@ -158,7 +168,7 @@ const Timer = ({ handleResendOtp, restartTimer }: { handleResendOtp: () => void,
             }, 1000);
 
             return () => clearInterval(intervalId)
-        }else{
+        } else {
             setTimer(0);
         }
     }, [timer])
@@ -168,7 +178,7 @@ const Timer = ({ handleResendOtp, restartTimer }: { handleResendOtp: () => void,
 
     return (
         <div className="flex items-center justify-center">
-            {timer !== 0 ? <p className="text-sm"> Otp would be invalid in <span className="font-semibold">{minutes}:{seconds} minutes.</span></p>
+            {timer !== 0 || restartTimer == true ? <p className="text-sm"> Otp would be invalid in <span className="font-semibold">{minutes}:{seconds} minutes.</span></p>
                 : <button className="text-sm underline" onClick={handleResendOtp}>resend otp</button>}
         </div>
     )

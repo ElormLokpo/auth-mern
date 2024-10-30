@@ -11,6 +11,7 @@ import { AuthTopSection } from "../components/top-section";
 import { useRegisterMutation } from "@/services/api/auth";
 import { toast } from "sonner"
 import {useNavigate} from "react-router-dom"
+import { routes } from "@/constants";
 
 export const Register = () => {
     const [phone, setPhoneNumber] = useState<string>()
@@ -42,7 +43,7 @@ export const Register = () => {
 
         if (success == true) {
             toast.success(`${message}`);
-            navigate("/auth/otp")
+            navigate(routes.auth.otp)
         }
 
         if (success == false) {
@@ -121,7 +122,7 @@ export const Register = () => {
                         </div>
 
                         <div className="flex items-center justify-center">
-                            <Link to="/auth/login" className="mb-6 text-[0.8rem] underline">Already have an account? <span className="font-semibold">Login</span></Link>
+                            <Link to={routes.auth.login} className="mb-6 text-[0.8rem] underline">Already have an account? <span className="font-semibold">Login</span></Link>
                         </div>
 
 
