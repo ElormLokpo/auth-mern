@@ -48,7 +48,7 @@ export class AuthController implements IController {
                     fullname: auth_mutation.firstname + " " + auth_mutation.lastname + " " + auth_mutation.othernames,
                     email: auth_mutation.email,
                     email_verified: auth_mutation.email_verified,
-                    mobile: auth_mutation.mobile, 
+                    mobile: auth_mutation.mobile,
                     country: auth_mutation.country,
                     address: auth_mutation.address,
                 }
@@ -130,7 +130,7 @@ export class AuthController implements IController {
                 if (validate_otp) {
                     await AuthModel.findByIdAndUpdate(email_check._id, { email_verified: true, otp: {} }, { new: true })
 
-                    let response = GenerateResponse(`Account verfied successfully`, true, {
+                    let response = GenerateResponse(`Otp verfied successfully`, true, {
                         id: email_check._id,
                         fullname: email_check.firstname + " " + email_check.lastname + " " + email_check.othernames,
                         email: email_check.email,
@@ -190,25 +190,37 @@ export class AuthController implements IController {
     }
 
     private async ResetPassword(req: Request, res: Response, next: NextFunction) {
-        let { id, email, password } = req.body;
+        let { email, password } = req.body;
 
-        let email_check = await AuthModel.findOne({ email });
+        let email_check = await AuthModel.findOne({ email }).select("+password");
         if (!email_check) {
             let response = GenerateResponse(`User with email: ${email} does not exist`, false, {})
             res.status(200).json(response);
             next();
         } else {
-
-            if (email_check.otp && Object.keys(email_check.otp).length > 0) {
+            
+            
+            if (email_check.otp.otp_code) {
                 let response = GenerateResponse(`Otp not validated`, false, {})
                 res.status(200).json(response);
                 next();
             } else {
-                await AuthModel.findByIdAndUpdate(id, { password }, { new: true });
+                let compare_password = await ComparePassword(password, email_check.password);
 
-                let response = GenerateResponse(`Password reset successfully`, true, {})
-                res.status(200).json(response);
-                next();
+                if (compare_password == true) {
+                    let response = GenerateResponse(`New password cannot be the same as the old password.`, false, {})
+                    res.status(200).json(response);
+                    next();
+                } else {
+
+                    let hashedPassword = await HashPassword(password)
+                    await AuthModel.findByIdAndUpdate(email_check._id, { password:hashedPassword }, { new: true });
+
+                    let response = GenerateResponse(`Password reset successfully`, true, {})
+                    res.status(200).json(response);
+                    next();
+                }
+
             }
 
 

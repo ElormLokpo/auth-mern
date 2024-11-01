@@ -3,7 +3,7 @@ import { Input, PhoneInput, CountrySelector, ConfirmPassword } from "@/component
 import { Button } from "@/components/button";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { registerSchema } from "@/schema/auth";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { NewPassword } from "../components/new-password";
 import { Link } from "react-router-dom";
 import { GoogleComponent } from "../components/google-comp";
@@ -12,6 +12,8 @@ import { useRegisterMutation } from "@/services/api/auth";
 import { toast } from "sonner"
 import {useNavigate} from "react-router-dom"
 import { routes } from "@/constants";
+import { AuthNavigationContext } from "@/context";
+import { IAuthNavigationContext } from "@/context/types";
 
 export const Register = () => {
     const [phone, setPhoneNumber] = useState<string>()
@@ -19,6 +21,7 @@ export const Register = () => {
     const [temPassword, setTempPassword] = useState<string>()
     const [confirmPasswordError, setConfirmPasswordError] = useState<boolean>(false)
     const [registerApiMutation, { isLoading }] = useRegisterMutation();
+    const authNavigationContextData = useContext(AuthNavigationContext) as IAuthNavigationContext
 
     let navigate = useNavigate();
 
@@ -43,6 +46,8 @@ export const Register = () => {
 
         if (success == true) {
             toast.success(`${message}`);
+            
+            authNavigationContextData.setOtpPageBlock(false)
             navigate(routes.auth.otp)
         }
 
@@ -70,7 +75,7 @@ export const Register = () => {
 
 
         <div className="h-full p-6 flex justify-center">
-            <div className="flex w-[28rem] justify-center flex-col ">
+            <div className="flex w-[24rem] justify-center flex-col ">
                 <div className="mb-8">
                     <AuthTopSection
                         head_text="Create free account"

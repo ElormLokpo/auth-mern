@@ -93,6 +93,25 @@ export const AuthApi = createApi({
                 return { data: { message: "Something went wrong", success: false } }
             }
         }),
+        resetPassword: builder.mutation<Partial<IResponse>, any>({
+            queryFn: async (args, _dispatch, _extraOptions, baseQuery) => {
+
+                const response = await baseQuery({
+                    url: "/auth/reset-password",
+                    method: "POST",
+                    body: args,
+                })
+
+                if (response.data) {
+                    const { message, success } = response.data as IResponse;
+
+                    return { data: { message, success } };
+                }
+
+
+                return { data: { message: "Something went wrong", success: false } }
+            }
+        }),
 
 
     }),
@@ -102,4 +121,4 @@ export const AuthApi = createApi({
 })
 
 
-export const { useRegisterMutation, useLoginMutation, useValidateOtpMutation, useRequestOtpMutation } = AuthApi;
+export const { useRegisterMutation, useLoginMutation, useValidateOtpMutation, useRequestOtpMutation, useResetPasswordMutation } = AuthApi;

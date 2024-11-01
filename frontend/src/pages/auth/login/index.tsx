@@ -8,8 +8,8 @@ import { GoogleComponent } from "../components/google-comp";
 import { AuthTopSection } from "../components/top-section";
 import { toast } from "sonner"
 import { useLoginMutation } from "@/services/api/auth";
-import { useState } from "react";
-import { routes } from "@/constants"
+import { useState, useContext } from "react";
+import { routes } from "@/constants";
 
 export const Login = () => {
     const [loginApiMutation, { isLoading }] = useLoginMutation();
@@ -39,6 +39,11 @@ export const Login = () => {
         }
     }
 
+    const handleForgotPassword = ()=>{
+        navigate(routes.auth.otp_email)
+      
+    }
+
 
     return (
         <div className="h-screen flex items-center justify-center">
@@ -63,7 +68,7 @@ export const Login = () => {
                         </div>
                         {isError && <p className="text-[0.7rem] mb-1 text-red-500 font-semibold">{errorMessage}</p>}
 
-                        <Link to={routes.auth.otp_email} className="mb-6 text-[0.7rem] underline">Forgot Password?</Link>
+                        <button onClick={handleForgotPassword}  className="text-[0.7rem] mb-5 underline">Forgot Password?</button>
 
                         <div className="mb-1">
                             <Button isLoading={isLoading} loadingText="Logging you in..." content="Login" handler={() => { }} />
