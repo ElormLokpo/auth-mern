@@ -19,6 +19,9 @@ export class AuthController implements IController {
         this.router.post(`${this.path}/validate-otp`, this.ValidateOtp)
         this.router.post(`${this.path}/request-otp`, this.RequestOtp)
         this.router.post(`${this.path}/reset-password`, this.ResetPassword)
+        this.router.patch(`${this.path}/update`, this.UpdateUser)
+        this.router.delete(`${this.path}/delete`, this.DeleteUser)
+
     }
 
     private async RegisterUser(req: Request, res: Response, next: NextFunction) {
@@ -51,6 +54,8 @@ export class AuthController implements IController {
                     mobile: auth_mutation.mobile,
                     country: auth_mutation.country,
                     address: auth_mutation.address,
+                    profile_picture: auth_mutation.profile_picture
+
                 }
                 let token = await GenerateToken({ id: auth_mutation._id })
 
@@ -101,7 +106,8 @@ export class AuthController implements IController {
             email_verified: email_check.email_verified,
             mobile: email_check.mobile,
             country: email_check.country,
-            address: email_check.address
+            address: email_check.address,
+            profile_picture: email_check.profile_picture
         }
 
         let token = await GenerateToken({ id: email_check._id })
@@ -137,7 +143,9 @@ export class AuthController implements IController {
                         email_verified: email_check.email_verified,
                         mobile: email_check.mobile,
                         country: email_check.country,
-                        address: email_check.address
+                        address: email_check.address,
+                        profile_picture: email_check.profile_picture
+
                     })
                     res.status(200).json(response);
                     next();
@@ -198,8 +206,8 @@ export class AuthController implements IController {
             res.status(200).json(response);
             next();
         } else {
-            
-            
+
+
             if (email_check.otp.otp_code) {
                 let response = GenerateResponse(`Otp not validated`, false, {})
                 res.status(200).json(response);
@@ -214,7 +222,7 @@ export class AuthController implements IController {
                 } else {
 
                     let hashedPassword = await HashPassword(password)
-                    await AuthModel.findByIdAndUpdate(email_check._id, { password:hashedPassword }, { new: true });
+                    await AuthModel.findByIdAndUpdate(email_check._id, { password: hashedPassword }, { new: true });
 
                     let response = GenerateResponse(`Password reset successfully`, true, {})
                     res.status(200).json(response);
@@ -231,6 +239,38 @@ export class AuthController implements IController {
     }
 
 
+    private async UpdateUser(req: Request, res: Response, next: NextFunction) {
+        let { id } = req.body;
+
+        let userData = await AuthModel.findById(id);
+        if (!userData) {
+            let response = GenerateResponse(`User does not exist`, false, {})
+            res.status(200).json(response);
+            next();
+        } else {
+            let user_mutation = await AuthModel.findByIdAndUpdate(id, req.body.data, { new: true })
+            let response = GenerateResponse(`User updated successfully`, true, user_mutation)
+            res.status(200).json(response);
+            next();
+        }
+    }
+
+
+    private async DeleteUser(req: Request, res: Response, next: NextFunction) {
+        let { id } = req.body;
+
+        let userData = await AuthModel.findById(id);
+        if (!userData) {
+            let response = GenerateResponse(`User does not exist`, false, {})
+            res.status(200).json(response);
+            next();
+        } else {
+            let user_mutation = await AuthModel.findByIdAndDelete(id)
+            let response = GenerateResponse(`User deleted successfully`, true, user_mutation)
+            res.status(200).json(response);
+            next();
+        }
+    }
 
 
 }

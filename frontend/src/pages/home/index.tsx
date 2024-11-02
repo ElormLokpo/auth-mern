@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { clearAuthState } from "@/services/redux/reducers/auth-slice"
 import { Navigate, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { ProfileImage } from "@/components/profile-image";
 
 
 export const HomePage = () => {
@@ -11,19 +12,19 @@ export const HomePage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    let authState = useSelector((state:any)=>state.auth.value);
-   
+    let authState = useSelector((state: any) => state.auth.value);
 
-    useEffect(()=>{
-        if(!authState.token  || Object.keys(authState.currentUser).length <=0 ){
+
+    useEffect(() => {
+        if (!authState.token || Object.keys(authState.currentUser).length <= 0) {
             setIsAuthenticated(false);
-        }else{
-            if(authState.currentUser.email_verified !== true){
+        } else {
+            if (authState.currentUser.email_verified !== true) {
                 navigate("/auth/reset-password/email")
             }
         }
-    },[authState])
-     
+    }, [authState])
+
     const handleLogout = () => {
         dispatch(clearAuthState())
     }
@@ -32,9 +33,8 @@ export const HomePage = () => {
     return isAuthenticated ? (
         <div className="h-screen w-screen flex items-center justify-center">
             <div className="flex flex-col items-center">
-                <div className="mb-2">
-                    <img className="rounded-full" src="https://placehold.co/200x200" />
-                </div>
+                <ProfileImage />
+                
                 <div className="text-lg font-semibold">{authState.currentUser.fullname}</div>
                 <div className="text-sm mb-2">{authState.currentUser.email}</div>
 

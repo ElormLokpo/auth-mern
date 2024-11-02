@@ -45,7 +45,7 @@ export const AuthApi = createApi({
 
                     if (success == true) {
                         let { token, response_body: currentUser } = data;
-                       
+
                         await dispatch(storeAuthState({ token, currentUser }))
                     }
                     return { data: { message, success } };
@@ -113,12 +113,55 @@ export const AuthApi = createApi({
             }
         }),
 
+        updateUser: builder.mutation<Partial<IResponse>, any>({
+            queryFn: async (args, _dispatch, _extraOptions, baseQuery) => {
 
+                const response = await baseQuery({
+                    url: "/auth/update",
+                    method: "PATCH",
+                    body: args,
+                })
+
+                if (response.data) {
+                    const { message, success } = response.data as IResponse;
+
+                    return { data: { message, success } };
+                }
+
+
+                return { data: { message: "Something went wrong", success: false } }
+            },
+        }),
+
+        deleteUser: builder.mutation<Partial<IResponse>, any>({
+            queryFn: async (args, _dispatch, _extraOptions, baseQuery) => {
+
+                const response = await baseQuery({
+                    url: "/auth/delete",
+                    method: "DELETE",
+                    body: args,
+                })
+
+                if (response.data) {
+                    const { message, success } = response.data as IResponse;
+
+                    return { data: { message, success } };
+                }
+
+
+                return { data: { message: "Something went wrong", success: false } }
+            },
+        }),
     }),
-
-
-
 })
 
 
-export const { useRegisterMutation, useLoginMutation, useValidateOtpMutation, useRequestOtpMutation, useResetPasswordMutation } = AuthApi;
+export const {
+    useRegisterMutation,
+    useLoginMutation,
+    useValidateOtpMutation,
+    useRequestOtpMutation,
+    useResetPasswordMutation,
+    useUpdateUserMutation,
+    useDeleteUserMutation
+} = AuthApi;

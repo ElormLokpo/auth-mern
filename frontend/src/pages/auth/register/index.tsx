@@ -48,6 +48,7 @@ export const Register = () => {
             toast.success(`${message}`);
             
             authNavigationContextData.setOtpPageBlock(false)
+            authNavigationContextData.setIsResetPassword(false)
             navigate(routes.auth.otp)
         }
 
