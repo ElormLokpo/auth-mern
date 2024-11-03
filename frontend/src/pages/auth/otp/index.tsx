@@ -5,14 +5,15 @@ import { useContext, useEffect } from "react";
 import { AuthNavigationContext } from "@/context";
 import { useNavigate } from "react-router-dom";
 import { routes } from "@/constants";
+import { IAuthNavigationContext } from "@/context/types";
 
 export const OtpPage = () => {
-    const authNavigationContextData = useContext(AuthNavigationContext)
+    const authNavigationContextData = useContext(AuthNavigationContext) as IAuthNavigationContext
 
     const navigate = useNavigate();
 
     useEffect(()=>{
-        if(authNavigationContextData?.otpPageBlock == true){
+        if(authNavigationContextData.otpPageBlock == true){
             navigate(routes.auth.login)
         }
        

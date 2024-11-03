@@ -38,11 +38,20 @@ export const OtpInput = ({ email }: { email: string }) => {
                         toast("Account verified successfully")
                         setIsError(false);
 
-                        if (authNavigationContextData?.isResetPassword == true) {
+                    
+
+                        if (authNavigationContextData.isResetPassword === false) {
+                            console.log("is not reset password")
+                         
+                            navigate(routes.home);
+
+
+                        } else if (authNavigationContextData.isResetPassword === true) {
+                            
+                          
                             navigate(routes.auth.otp_password);
-                        } else {
-                            navigate(routes.home)
                         }
+
                         authNavigationContextData?.setOtpPageBlock(true);
                     } else {
                         setIsError(true)

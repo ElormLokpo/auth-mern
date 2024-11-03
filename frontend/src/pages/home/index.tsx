@@ -19,9 +19,9 @@ export const HomePage = () => {
         if (!authState.token || Object.keys(authState.currentUser).length <= 0) {
             setIsAuthenticated(false);
         } else {
-            if (authState.currentUser.email_verified !== true) {
-                navigate("/auth/reset-password/email")
-            }
+            // if (authState.currentUser.email_verified !== true) {
+            //     navigate("/auth/reset-password/email")
+            // }
         }
     }, [authState])
 
